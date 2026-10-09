@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.81] - 2026-10-09
+
 ### Changed
 
 - `PackageManagerAction` removes any key whose `customConfig` value is `null`, so a default such as `types` can now be dropped instead of being written out as `"types": null`
