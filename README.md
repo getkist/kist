@@ -72,7 +72,7 @@ stages:
           - name: compile
             action: TypeScriptCompilerAction
             options:
-                tsConfigPath: "./tsconfig.json"
+                tsconfigPath: "./tsconfig.json"
                 outputDir: "./dist/js"
 ```
 
@@ -180,7 +180,7 @@ stages:
           - name: CompileTS
             action: TypeScriptCompilerAction
             options:
-                tsConfigPath: "./tsconfig.json"
+                tsconfigPath: "./tsconfig.json"
                 outputDir: "./dist/js"
 
           - name: CompileSASS
@@ -202,7 +202,7 @@ stages:
           - name: compile
             action: TypeScriptCompilerAction
             options:
-                tsConfigPath: "./tsconfig.json"
+                tsconfigPath: "./tsconfig.json"
 ```
 
 ```yaml
@@ -293,7 +293,7 @@ stages:
             env:
                 - NODE_ENV
             options:
-                tsConfigPath: "./tsconfig.json"
+                tsconfigPath: "./tsconfig.json"
                 outputDir: "./dist"
 ```
 

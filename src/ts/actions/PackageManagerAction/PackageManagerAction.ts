@@ -131,11 +131,21 @@ export class PackageManagerAction extends Action {
         const filePath = path.join(outputDir, "package.json");
 
         // Merge default settings with filtered config and custom overrides
-        const finalConfig = {
+        const finalConfig: Record<string, unknown> = {
             ...packageConfig,
             ...filteredConfig,
             ...customConfig,
         };
+
+        // A `null` override removes the key. Without this a default such as
+        // `types` could only be overwritten, never dropped, so packages
+        // without type declarations shipped `"types": null`.
+        for (const [key, value] of Object.entries(customConfig)) {
+            if (value === null) {
+                delete finalConfig[key];
+            }
+        }
+
         const data = JSON.stringify(finalConfig, null, 2);
 
         try {

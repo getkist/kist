@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `PackageManagerAction` removes any key whose `customConfig` value is `null`, so a default such as `types` can now be dropped instead of being written out as `"types": null`
+
+### Fixed
+
+- `TypeScriptCompilerAction` silently ignored `tsConfigPath`, the spelling the README documented, and compiled `./tsconfig.json` instead. It is now accepted with a deprecation warning, and the README uses `tsconfigPath`
+- A `LiveServer` test waited a fixed number of event-loop ticks for a real file read and failed on slower CI runners, which blocked the 0.1.79 and 0.1.80 npm releases
+
 ## [0.1.80] - 2026-09-06
 
 ### Changed

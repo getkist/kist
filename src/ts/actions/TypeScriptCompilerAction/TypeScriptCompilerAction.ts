@@ -23,13 +23,18 @@ export class TypeScriptCompilerAction extends Action {
      * @throws {Error} Throws an error if compilation fails.
      */
     async execute(options: ActionOptionsType): Promise<void> {
-        // const { tsconfigPath = "tsconfig.json" } = options;
-        const {
-            tsconfigPath = "tsconfig.json",
-            filePaths,
-            outputDir,
-            compilerOptions = {},
-        } = options;
+        const { filePaths, outputDir, compilerOptions = {} } = options;
+
+        // The README long documented `tsConfigPath`, which was then silently
+        // ignored in favour of ./tsconfig.json. Accept it, but say so.
+        let { tsconfigPath } = options;
+        if (tsconfigPath === undefined && options.tsConfigPath !== undefined) {
+            this.logWarn(
+                "Option 'tsConfigPath' is deprecated; use 'tsconfigPath' instead.",
+            );
+            tsconfigPath = options.tsConfigPath;
+        }
+        tsconfigPath ??= "tsconfig.json";
 
         const resolvedTsconfigPath = path.resolve(tsconfigPath);
 

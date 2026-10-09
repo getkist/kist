@@ -394,13 +394,16 @@ describe("LiveServer", () => {
             );
 
             // The middleware settles on a promise chain that includes a real
-            // file read, so wait for it to reach one of its outcomes.
+            // file read, so wait for it to reach one of its outcomes. The read
+            // runs on the libuv thread pool, so a fixed number of event-loop
+            // ticks is not enough on a busy CI runner; wait on the clock.
             const settled = (): boolean =>
                 next.mock.calls.length > 0 ||
                 send.mock.calls.length > 0 ||
                 status.mock.calls.length > 0;
-            for (let tick = 0; tick < 100 && !settled(); tick++) {
-                await new Promise((resolveTick) => setImmediate(resolveTick));
+            const deadline = Date.now() + 2000;
+            while (!settled() && Date.now() < deadline) {
+                await new Promise((resolveTick) => setTimeout(resolveTick, 5));
             }
 
             return { next, send, status };

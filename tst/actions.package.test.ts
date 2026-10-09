@@ -149,6 +149,26 @@ describe("package and build actions", () => {
             expect(written.private).toBe(true);
         });
 
+        it("should drop keys whose custom override is null", async () => {
+            const source = makeFile(
+                "package.json",
+                JSON.stringify({ name: "demo", version: "9.9.9" }),
+            );
+            const outputDir = join(root, "dist");
+
+            await action().execute({
+                packageJsonPath: source,
+                outputDir,
+                customConfig: { types: null, version: null },
+            });
+
+            const written = readOutput(outputDir);
+            expect(written.name).toBe("demo");
+            expect("types" in written).toBe(false);
+            expect("version" in written).toBe(false);
+            expect(written.main).toBe(packageConfig.main);
+        });
+
         it("should report a missing source file", async () => {
             await expect(
                 action().execute({
@@ -523,6 +543,22 @@ describe("package and build actions", () => {
             // so output silently went to the tsconfig's `outDir` instead.
             expect(existsSync(join(root, "custom-out", "only.js"))).toBe(true);
             expect(existsSync(join(root, "out", "only.js"))).toBe(false);
+        });
+
+        it("should accept the deprecated tsConfigPath spelling with a warning", async () => {
+            makeTsconfig();
+            makeFile("src/index.ts", "export const value: number = 1;\n");
+
+            await action().execute({
+                tsConfigPath: join(root, "tsconfig.json"),
+            });
+
+            expect(spyOutput(spies.warn())).toContain(
+                "Option 'tsConfigPath' is deprecated",
+            );
+            expect(spyOutput(spies.log())).toContain(
+                `Compiling TypeScript using configuration: ${join(root, "tsconfig.json")}`,
+            );
         });
 
         it("should default the tsconfig path to the working directory", async () => {
